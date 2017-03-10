@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GuideMe</string>
+    <string name="error_message">Ha ocurrido un error al mostrar los lugares disponibles</string>
+</resources>
