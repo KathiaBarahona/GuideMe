@@ -46,11 +46,13 @@ public class MainActivity extends AppCompatActivity implements PlaceAdapter.Plac
 
         mPlaceSpeech = new PlaceSpeech(this, null);
         if(mNFCAdapter == null){
-           mPlaceSpeech.speakPlaceName("Este dispositivo no soporta NFC perroh!");
+            mPlaceSpeech.speakPlaceName("Este dispositivo no soporta NFC perroh!");
+            finish();
             return;
         }
         if (!mNFCAdapter.isEnabled()) {
             mPlaceSpeech.speakPlaceName("Active el NFC uste");
+        
         }
         //to implement a RecyclerView, we need a Layout Manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -68,14 +70,31 @@ public class MainActivity extends AppCompatActivity implements PlaceAdapter.Plac
     protected void onResume() {
         super.onResume();
         setupForegroundDispatch(this,mNFCAdapter);
-        super.onPause();
+
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
+
         stopForegroundDispatch(this, mNFCAdapter);
+        super.onPause();
     }
+
+    @Override
+    protected void onDestroy() {
+        if(mPlaceSpeech != null){
+            mPlaceSpeech.stop();
+            mPlaceSpeech.shutdown();
+
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
     public static void stopForegroundDispatch(final Activity activity, NfcAdapter adapter) {
         adapter.disableForegroundDispatch(activity);
     }
@@ -100,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements PlaceAdapter.Plac
 
         adapter.enableForegroundDispatch(activity, pendingIntent, filters, techList);
     }
+
     private void handleIntent(Intent intent){
         String action = intent.getAction();
         NFCReader nfcReader = new NFCReader();
