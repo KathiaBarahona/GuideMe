@@ -8,6 +8,7 @@ import android.nfc.tech.MifareUltralight;
 import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -21,8 +22,9 @@ import static android.content.ContentValues.TAG;
  */
 
 public class NFCReader extends AsyncTask<Tag, Void, String> {
-    private PlaceSpeech mPlaceSpeech;
+
     private Context context;
+    private PlaceSpeech mPlaceSpeech;
     @Override
     protected String doInBackground(Tag... params) {
         Tag tag = params[0];
@@ -50,6 +52,9 @@ public class NFCReader extends AsyncTask<Tag, Void, String> {
     }
     public void setContext(Context context){
         this.context = context;
+    }
+    public void setmPlaceSpeech(PlaceSpeech placeSpeech){
+        this.mPlaceSpeech = placeSpeech;
     }
     private String readText(NdefRecord record) throws UnsupportedEncodingException {
         /*
@@ -80,7 +85,7 @@ public class NFCReader extends AsyncTask<Tag, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         if (result != null) {
-            mPlaceSpeech = new PlaceSpeech(context, null);
+            System.out.println(result);
             mPlaceSpeech.speakPlaceName(result);
         }
     }

@@ -9,6 +9,7 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,7 +22,7 @@ import android.widget.Toast;
 
 import guideMeGraphResources.GraphGuideMe;
 
-public class MainActivity extends AppCompatActivity implements PlaceAdapter.PlaceAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity implements PlaceAdapter.PlaceAdapterOnClickHandler, TextToSpeech.OnInitListener {
     public static final String MIME_TEXT_PLAIN = "text/plain";
     private RecyclerView mRecyclerView;
     private PlaceAdapter mPlaceAdapter;
@@ -44,16 +45,8 @@ public class MainActivity extends AppCompatActivity implements PlaceAdapter.Plac
         //---------------Obtain loader-------------------------------------------------------------//
         mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
 
-        mPlaceSpeech = new PlaceSpeech(this, null);
-        if(mNFCAdapter == null){
-            mPlaceSpeech.speakPlaceName("Este dispositivo no soporta NFC perroh!");
-            finish();
-            return;
-        }
-        if (!mNFCAdapter.isEnabled()) {
-            mPlaceSpeech.speakPlaceName("Active el NFC uste");
-        
-        }
+        mPlaceSpeech = new PlaceSpeech(this, this);
+
         //to implement a RecyclerView, we need a Layout Manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -63,20 +56,43 @@ public class MainActivity extends AppCompatActivity implements PlaceAdapter.Plac
         //Must set adapter to RecyclerView
         mRecyclerView.setAdapter(mPlaceAdapter);
         loadPlaces();
+    }
+
+    @Override
+    public void onInit(int status) {
+        if(mNFCAdapter == null){
+
+            mPlaceSpeech.speakPlaceName("Este dispositivo no soporta NFC perroh!");
+            finish();
+            return;
+        }
+        if (mNFCAdapter != null && !mNFCAdapter.isEnabled()) {
+            mPlaceSpeech.speakPlaceName("Active el NFC uste");
+
+        }
+        Log.d("",getIntent().toString());
+
+
         handleIntent(getIntent());
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setupForegroundDispatch(this,mNFCAdapter);
+        if(mNFCAdapter != null){
+            setupForegroundDispatch(this,mNFCAdapter);
+        }
+
 
     }
 
     @Override
     protected void onPause() {
+        if(mNFCAdapter != null){
+            stopForegroundDispatch(this, mNFCAdapter);
+        }
 
-        stopForegroundDispatch(this, mNFCAdapter);
         super.onPause();
     }
 
@@ -121,16 +137,19 @@ public class MainActivity extends AppCompatActivity implements PlaceAdapter.Plac
     }
 
     private void handleIntent(Intent intent){
+
         String action = intent.getAction();
+        System.out.println(action);
         NFCReader nfcReader = new NFCReader();
         nfcReader.setContext(this);
+        nfcReader.setmPlaceSpeech(mPlaceSpeech);
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
 
             String type = intent.getType();
             if (MIME_TEXT_PLAIN.equals(type)) {
 
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                new NFCReader().execute(tag);
+               nfcReader.execute(tag);
 
             } else {
                 System.out.println("Tipo errado");
@@ -144,13 +163,14 @@ public class MainActivity extends AppCompatActivity implements PlaceAdapter.Plac
 
             for (String tech : techList) {
                 if (searchedTech.equals(tech)) {
-                    new NFCReader().execute(tag);
+                    nfcReader.execute(tag);
                     break;
                 }
             }
         }
     }
     public void loadPlaces() {
+
         showPlaceDataView();
         new FeatchPlaceTask().execute();
     }
