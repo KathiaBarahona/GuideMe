@@ -12,6 +12,7 @@ import java.util.Locale;
 
 public class PlaceSpeech extends TextToSpeech{
     public String origen;
+    public String destiny;
     Locale localeSpanish = new Locale("es","","");
     public PlaceSpeech(Context context, OnInitListener listener) {
         super(context, listener);
@@ -29,6 +30,11 @@ public class PlaceSpeech extends TextToSpeech{
         return origen;
     }
 
+    public String getDestiny() {
+        return destiny;
+    }
 
-
+    public void setDestiny(String destiny) {
+        this.destiny = destiny;
+    }
 }

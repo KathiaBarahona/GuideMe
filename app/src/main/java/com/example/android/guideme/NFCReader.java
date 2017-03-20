@@ -15,6 +15,9 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
+import guideMeGraphResources.GraphGuideMe;
+import guideMeGraphResources.VertexGuideMe;
+
 import static android.content.ContentValues.TAG;
 import static com.example.android.guideme.MainActivity.*;
 
@@ -26,6 +29,7 @@ public class NFCReader extends AsyncTask<Tag, Void, String> {
 
     private Context context;
     private PlaceSpeech mPlaceSpeech;
+    private GraphGuideMe graph;
     private String Origen;
     @Override
     protected String doInBackground(Tag... params) {
@@ -96,10 +100,18 @@ public class NFCReader extends AsyncTask<Tag, Void, String> {
             //setOrigen(result);
             mPlaceSpeech.speakPlaceName(result);
             mPlaceSpeech.Origen(result);
+            if(mPlaceSpeech.getDestiny() != null && mPlaceSpeech.getDestiny() != "" && !mPlaceSpeech.getOrigen().equals(mPlaceSpeech.getDestiny())){
+                mPlaceSpeech.speakPlaceName(graph.getShortestPath(mPlaceSpeech.getOrigen(), mPlaceSpeech.getDestiny()));
+            }else if (mPlaceSpeech.getDestiny() != null && mPlaceSpeech.getDestiny() != "" && mPlaceSpeech.getOrigen().equals(mPlaceSpeech.getDestiny())){
+                mPlaceSpeech.speakPlaceName("Ha llegado a su destino!");
+            }
         }
     }
 
-   /* public void setOrigen(String origen) {
+    public void setGraph(GraphGuideMe graph) {
+        this.graph = graph;
+    }
+/* public void setOrigen(String origen) {
         Origen = origen;
     }
 
