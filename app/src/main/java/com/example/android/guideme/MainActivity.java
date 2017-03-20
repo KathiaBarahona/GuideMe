@@ -29,8 +29,10 @@ public class MainActivity extends AppCompatActivity implements PlaceAdapter.Plac
     private PlaceSpeech mPlaceSpeech;
     private TextView mErrorMessageDisplay;
     private NfcAdapter mNFCAdapter;
+    private NFCReader mNFCReader;
     private ProgressBar mLoadingIndicator;
     private GraphGuideMe graph;
+    public String Origen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,9 +193,12 @@ public class MainActivity extends AppCompatActivity implements PlaceAdapter.Plac
         placeToast.show();
     }
 
+
+
     @Override
     public void onDoubleTap(String placeSelected) {
-        graph.getShortestPath("CATI", placeSelected);
+        System.out.println(placeSelected);
+        graph.getShortestPath(mPlaceSpeech.getOrigen(), placeSelected);
     }
 
     public void showErrorMessage() {
@@ -227,6 +232,8 @@ public class MainActivity extends AppCompatActivity implements PlaceAdapter.Plac
             this.distance = distance;
             this.direction = direction;
         }
+
+
 
         public String getOriginPlace() {
             return originPlace;
@@ -280,6 +287,7 @@ public class MainActivity extends AppCompatActivity implements PlaceAdapter.Plac
             if (strings != null) {
                 showPlaceDataView();
                 mPlaceAdapter.setPlaceData(strings);
+
             } else {
                 showErrorMessage();
             }

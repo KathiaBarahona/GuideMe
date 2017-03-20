@@ -11,6 +11,7 @@ import java.util.Locale;
  */
 
 public class PlaceSpeech extends TextToSpeech{
+    public String origen;
     Locale localeSpanish = new Locale("es","","");
     public PlaceSpeech(Context context, OnInitListener listener) {
         super(context, listener);
@@ -19,5 +20,15 @@ public class PlaceSpeech extends TextToSpeech{
     public void speakPlaceName(String placeName){
         speak(placeName,TextToSpeech.QUEUE_ADD,null);
     }
+
+    public void Origen(String origen){
+        this.origen = origen;
+    }
+
+    public String getOrigen(){
+        return origen;
+    }
+
+
 
 }

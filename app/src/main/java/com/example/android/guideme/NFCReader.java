@@ -16,6 +16,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import static android.content.ContentValues.TAG;
+import static com.example.android.guideme.MainActivity.*;
 
 /**
  * Created by Agile 2016 on 1/31/2017.
@@ -25,6 +26,7 @@ public class NFCReader extends AsyncTask<Tag, Void, String> {
 
     private Context context;
     private PlaceSpeech mPlaceSpeech;
+    private String Origen;
     @Override
     protected String doInBackground(Tag... params) {
         Tag tag = params[0];
@@ -82,11 +84,26 @@ public class NFCReader extends AsyncTask<Tag, Void, String> {
         return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
     }
 
+
+
+
     @Override
     protected void onPostExecute(String result) {
         if (result != null) {
-            System.out.println(result);
+
+            this.Origen = result;
+            System.out.println(Origen);
+            //setOrigen(result);
             mPlaceSpeech.speakPlaceName(result);
+            mPlaceSpeech.Origen(result);
         }
     }
+
+   /* public void setOrigen(String origen) {
+        Origen = origen;
+    }
+
+    public String getOrigen(){
+        return Origen;
+    } */
 }
