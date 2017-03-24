@@ -145,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements PlaceAdapter.Plac
         NFCReader nfcReader = new NFCReader();
         nfcReader.setContext(this);
         nfcReader.setmPlaceSpeech(mPlaceSpeech);
-        nfcReader.setGraph(graph);
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
 
             String type = intent.getType();
@@ -198,13 +197,8 @@ public class MainActivity extends AppCompatActivity implements PlaceAdapter.Plac
 
     @Override
     public void onDoubleTap(String placeSelected) {
-        mPlaceSpeech.setDestiny(placeSelected);
-        if(mPlaceSpeech.getOrigen() != null && mPlaceSpeech.getOrigen() != "" && !mPlaceSpeech.getOrigen().equals(placeSelected)){
-           mPlaceSpeech.speakPlaceName(graph.getShortestPath(mPlaceSpeech.getOrigen(), placeSelected));
-        }else if (mPlaceSpeech.getOrigen() != null && mPlaceSpeech.getOrigen() != "" && mPlaceSpeech.getOrigen().equals(placeSelected)){
-            mPlaceSpeech.speakPlaceName("Ha llegado a su destino!");
-        }
-
+        System.out.println(placeSelected);
+        graph.getShortestPath(mPlaceSpeech.getOrigen(), placeSelected);
     }
 
     public void showErrorMessage() {
@@ -271,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements PlaceAdapter.Plac
             //---------------HARDCODED PLACES (TEMPORAL!!!)----------//
             String[] places = {"CATI", "Cafetería",
                     "Edifício 5", "Polideportivo"};
-            placeNode[] nodes = new placeNode[10];
+            placeNode[] nodes = new placeNode[9];
             nodes[0] = new placeNode("CATI", "Cafetería", 35, "norte");
             nodes[1] = new placeNode("CATI", "Polideportivo", 69, "noreste");
             nodes[2] = new placeNode("Cafetería", "Polideportivo", 64, "este");
@@ -281,7 +275,6 @@ public class MainActivity extends AppCompatActivity implements PlaceAdapter.Plac
             nodes[6] = new placeNode("Polideportivo", "Edifício 5", 75, "noroeste");
             nodes[7] = new placeNode("Polideportivo", "Cafetería", 64, "oeste");
             nodes[8] = new placeNode("Polideportivo", "CATI", 69, "suroeste");
-            nodes[9] = new placeNode("Cafetería", "CATI", 35, "suroeste");
             buildGraph(places, nodes);
             return places;
 

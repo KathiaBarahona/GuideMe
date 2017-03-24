@@ -86,7 +86,7 @@ public class GraphGuideMe {
         return relations[index1][index2];
     }
 
-    public String getShortestPath(String originPlace, String destinationPlace) {
+    public ArrayList getShortestPath(String originPlace, String destinationPlace) {
         int originIndex = -1, destinationIndex = -1;
         ArrayList<VertexGuideMe> route = new ArrayList<>();
         for (int v = 0; v < vertices.size(); v++) {
@@ -102,29 +102,8 @@ public class GraphGuideMe {
         if (originIndex != -1 && destinationIndex != -1) {
             route = Dijkstra(vertices.get(originIndex), vertices.get(destinationIndex));
         }
-
-        String text = "";
-        VertexGuideMe verticeO = vertices.get(originIndex);
-        System.out.println(verticeO);
-        VertexGuideMe verticeD = vertices.get(destinationIndex);
-        VertexGuideMe lastVertex = null;
-        for(int i = 0; i < route.size(); i++){
-            if(i == 0){
-                System.out.println(route.get(i));
-                if(this.getWeight(verticeO, route.get(i)) != null){
-                    text = "Diríjase " + this.getWeight(verticeO, route.get(i)).getDistance() + "metros al " + this.getWeight(verticeO, route.get(i)).getDirection() + " para llegar a ";
-                    text += route.get(i).getVertexName();
-                }
-
-            }else{
-                text += " luego diríjase "+ this.getWeight(lastVertex, route.get(i)).getDistance() + "metros al " + this.getWeight(lastVertex, route.get(i)).getDirection() + " para llegar a ";
-                text += route.get(i).getVertexName();
-            }
-            lastVertex = route.get(i);
-        }
-        text  += " finalmente dirígase "+ this.getWeight(lastVertex, verticeD).getDistance() + "metros al " + this.getWeight(lastVertex, verticeD).getDirection() + " para llegar a ";
-        text += verticeD.getVertexName();
-        return text;
+        System.out.println(route);
+        return route;
     }
 
     public ArrayList Dijkstra(VertexGuideMe origin, VertexGuideMe destiny) {
@@ -159,7 +138,7 @@ public class GraphGuideMe {
         ArrayList result = new ArrayList();
         result.add(distances.get(destiny));
         result.add(routes.get(destiny));
-        return routes.get(destiny);
+        return result;
     }
 
     public ArrayList getAdjacent(VertexGuideMe vertex) {
